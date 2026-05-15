@@ -1,0 +1,181 @@
+# trigger:
+# - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  tag: '$(Build.BuildId)'
+
+  acrServiceConnection: 'bit-acr'
+
+  frontendRepository: 'frontend-app'
+  gatewayRepository: 'api-gateway'
+  authRepository: 'auth-service'
+  productRepository: 'product-service'
+  cartRepository: 'cart-service'
+  orderRepository: 'order-service'
+  paymentRepository: 'payment-service'
+  aiRepository: 'ai-recommendation-service'
+
+stages:
+
+# =========================================================
+# STAGE 1 - BUILD AND PUSH ALL CONTAINERS
+# =========================================================
+
+- stage: BuildAndPush
+  displayName: Build and Push Docker Images
+
+  jobs:
+
+  - job: DockerBuildPush
+    displayName: Build and Push Images
+
+    steps:
+
+    # =====================================================
+    # FRONTEND
+    # =====================================================
+
+    - task: Docker@2
+      displayName: Build & Push Frontend
+      inputs:
+        command: buildAndPush
+        repository: $(frontendRepository)
+        dockerfile: frontend-app/Dockerfile
+        buildContext: frontend-app
+        containerRegistry: $(acrServiceConnection)
+        tags: |
+          $(tag)
+          latest
+
+    # # =====================================================
+    # # API GATEWAY
+    # # =====================================================
+
+    # - task: Docker@2
+    #   displayName: Build & Push API Gateway
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: $(gatewayRepository)
+    #     dockerfile: api-gateway/Dockerfile
+    #     buildContext: api-gateway
+    #     containerRegistry: $(acrServiceConnection)
+    #     tags: |
+    #       $(tag)
+    #       latest
+
+    # # =====================================================
+    # # AUTH SERVICE
+    # # =====================================================
+
+    # - task: Docker@2
+    #   displayName: Build & Push Auth Service
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: $(authRepository)
+    #     dockerfile: auth-service/Dockerfile
+    #     buildContext: auth-service
+    #     containerRegistry: $(acrServiceConnection)
+    #     tags: |
+    #       $(tag)
+    #       latest
+
+    # # =====================================================
+    # # PRODUCT SERVICE
+    # # =====================================================
+
+    # - task: Docker@2
+    #   displayName: Build & Push Product Service
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: $(productRepository)
+    #     dockerfile: product-service/Dockerfile
+    #     buildContext: product-service
+    #     containerRegistry: $(acrServiceConnection)
+    #     tags: |
+    #       $(tag)
+    #       latest
+
+    # # =====================================================
+    # # CART SERVICE
+    # # =====================================================
+
+    # - task: Docker@2
+    #   displayName: Build & Push Cart Service
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: $(cartRepository)
+    #     dockerfile: cart-service/Dockerfile
+    #     buildContext: cart-service
+    #     containerRegistry: $(acrServiceConnection)
+    #     tags: |
+    #       $(tag)
+    #       latest
+
+    # # =====================================================
+    # # ORDER SERVICE
+    # # =====================================================
+
+    # - task: Docker@2
+    #   displayName: Build & Push Order Service
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: $(orderRepository)
+    #     dockerfile: order-service/Dockerfile
+    #     buildContext: order-service
+    #     containerRegistry: $(acrServiceConnection)
+    #     tags: |
+    #       $(tag)
+    #       latest
+
+    # # =====================================================
+    # # PAYMENT SERVICE
+    # # =====================================================
+
+    # - task: Docker@2
+    #   displayName: Build & Push Payment Service
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: $(paymentRepository)
+    #     dockerfile: payment-service/Dockerfile
+    #     buildContext: payment-service
+    #     containerRegistry: $(acrServiceConnection)
+    #     tags: |
+    #       $(tag)
+    #       latest
+
+    # # =====================================================
+    # # AI RECOMMENDATION SERVICE
+    # # =====================================================
+
+    # - task: Docker@2
+    #   displayName: Build & Push AI Recommendation Service
+    #   inputs:
+    #     command: buildAndPush
+    #     repository: $(aiRepository)
+    #     dockerfile: ai-recommendation-service/Dockerfile
+    #     buildContext: ai-recommendation-service
+    #     containerRegistry: $(acrServiceConnection)
+    #     tags: |
+    #       $(tag)
+    #       latest
+
+    # # =====================================================
+    # # SUMMARY
+    # # =====================================================
+
+    # - script: |
+    #     echo "======================================="
+    #     echo "Docker Images Successfully Built"
+    #     echo "======================================="
+    #     echo "frontend-app:$(Build.BuildId)"
+    #     echo "api-gateway:$(Build.BuildId)"
+    #     echo "auth-service:$(Build.BuildId)"
+    #     echo "product-service:$(Build.BuildId)"
+    #     echo "cart-service:$(Build.BuildId)"
+    #     echo "order-service:$(Build.BuildId)"
+    #     echo "payment-service:$(Build.BuildId)"
+    #     echo "ai-recommendation-service:$(Build.BuildId)"
+    #   displayName: Build Summary
